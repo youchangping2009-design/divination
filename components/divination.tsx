@@ -158,7 +158,7 @@ function Divination() {
   return (
     <main
       ref={flexRef}
-      className="gap mx-auto flex h-0 w-[90%] flex-1 flex-col flex-nowrap items-center"
+      className="gap mx-auto flex h-0 w-[90%] flex-1 flex-col flex-nowrap items-center overflow-y-auto"
     >
       <Question
         question={question}
