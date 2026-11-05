@@ -7,8 +7,9 @@ import Result, { ResultObj } from "@/components/result";
 import Question from "@/components/question";
 import ResultAI from "@/components/result-ai";
 import { animateChildren } from "@/lib/animate";
-import guaIndexData from "@/lib/data/gua-index.json";
-import guaListData from "@/lib/data/gua-list.json";
+import { getGua, lineName, toYao } from "@/lib/gua";
+import { playTossSound, unlockSound } from "@/lib/sound";
+import TurtleIcon from "@/components/turtle-icon";
 import { getAnswer } from "@/app/server";
 import { readStreamableValue } from "ai/rsc";
 import { Button } from "./ui/button";
@@ -29,10 +30,7 @@ function Divination() {
     try {
       const { data, error } = await getAnswer(
         question,
-        resultObj!.guaMark,
-        resultObj!.guaTitle,
-        resultObj!.guaResult,
-        resultObj!.guaChange,
+        hexagramList.map((value) => toYao(value.yang, !!value.change)),
       );
       if (error) {
         setError(error);
@@ -112,6 +110,7 @@ function Divination() {
     }
     setFrontList([bool(), bool(), bool()]);
     setRotation(true);
+    playTossSound();
     setCount(count + 1);
   }
 
@@ -139,46 +138,16 @@ function Divination() {
     if (list.length != 6) {
       return;
     }
-    const guaDict1 = ["坤", "震", "坎", "兑", "艮", "离", "巽", "乾"];
-    const guaDict2 = ["地", "雷", "水", "泽", "山", "火", "风", "天"];
-
-    const changeYang = ["初九", "九二", "九三", "九四", "九五", "上九"];
-    const changeYin = ["初六", "六二", "六三", "六四", "六五", "上六"];
-
     const changeList: String[] = [];
     list.forEach((value, index) => {
       if (!value.change) {
         return;
       }
-      changeList.push(value.yang ? changeYang[index] : changeYin[index]);
+      changeList.push(lineName(index, value.yang));
     });
 
-    // 卦的结果： 第X卦 X卦 XX卦 X上X下
-    // 计算卦的索引，111对应乾卦，000对应坤卦，索引转为10进制。
-    const upIndex =
-      (list[5].yang ? 4 : 0) + (list[4].yang ? 2 : 0) + (list[3].yang ? 1 : 0);
-    const downIndex =
-      (list[2].yang ? 4 : 0) + (list[1].yang ? 2 : 0) + (list[0].yang ? 1 : 0);
-
-    const guaIndex = guaIndexData[upIndex][downIndex] - 1;
-    const guaName1 = guaListData[guaIndex];
-
-    let guaName2;
-    if (upIndex === downIndex) {
-      // 上下卦相同，格式为X为X
-      guaName2 = guaDict1[upIndex] + "为" + guaDict2[upIndex];
-    } else {
-      guaName2 = guaDict2[upIndex] + guaDict2[downIndex] + guaName1;
-    }
-
-    const guaDesc = guaDict1[upIndex] + "上" + guaDict1[downIndex] + "下";
-
     setResultObj({
-      // 例：26.山天大畜
-      guaMark: `${(guaIndex + 1).toString().padStart(2, "0")}.${guaName2}`,
-      guaTitle: `周易第${guaIndex + 1}卦`,
-      // 例：大畜卦(山天大畜)_艮上乾下
-      guaResult: `${guaName1}卦(${guaName2})_${guaDesc}`,
+      ...getGua(list.map((value) => value.yang)),
       guaChange:
         changeList.length === 0 ? "无变爻" : `变爻: ${changeList.toString()}`,
     });
@@ -191,7 +160,13 @@ function Divination() {
       ref={flexRef}
       className="gap mx-auto flex h-0 w-[90%] flex-1 flex-col flex-nowrap items-center"
     >
-      <Question question={question} setQuestion={setQuestion} />
+      <Question
+        question={question}
+        setQuestion={(value: string) => {
+          unlockSound();
+          setQuestion(value);
+        }}
+      />
 
       {!resultAi && !inputQuestion && (
         <Coin
@@ -203,12 +178,16 @@ function Divination() {
 
       {!inputQuestion && !showResult && (
         <div className="relative">
-          <span className="pl-2 text-lg font-medium">
-            🎲 第{" "}
+          <span className="flex items-center pl-2 text-lg font-medium">
+            <TurtleIcon
+              size={22}
+              className="mr-1.5 text-amber-700 dark:text-amber-500"
+            />
+            第&nbsp;
             <span className="font-mono text-xl font-bold text-orange-500">
               {count === 0 ? "-/-" : `${count}/6`}
-            </span>{" "}
-            次卜筮
+            </span>
+            &nbsp;次卜筮
           </span>
         </div>
       )}
@@ -220,12 +199,7 @@ function Divination() {
             <div className="flex flex-col justify-around">
               <Result {...resultObj} />
               <div className="flex flex-col gap-2 sm:px-6">
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={restartClick}
-                  disabled={rotation}
-                >
+                <Button size="sm" onClick={restartClick} disabled={rotation}>
                   <ListRestart size={18} className="mr-1" />
                   重来
                 </Button>

@@ -3,74 +3,30 @@ import { streamText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createStreamableValue } from "ai/rsc";
 import { ERROR_PREFIX } from "@/lib/constant";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
+import { Yao } from "@/lib/gua";
+import { buildMessages } from "@/lib/prompt";
 
 const model = process.env.OPENAI_MODEL ?? "gpt-3.5-turbo";
 const openai = createOpenAI({ baseURL: process.env.OPENAI_BASE_URL });
 
 const STREAM_INTERVAL = 60;
 const MAX_SIZE = 6;
+// 推理模型的思考过程也计入该上限，过低会截断回答
+const MAX_TOKENS = 4000;
 
-export async function getAnswer(
-  prompt: string,
-  guaMark: string,
-  guaTitle: string,
-  guaResult: string,
-  guaChange: string,
-) {
-  console.log(prompt, guaTitle, guaResult, guaChange);
+export async function getAnswer(prompt: string, yaoList: Yao[]) {
   const stream = createStreamableValue();
   try {
-    // guaMark 来自客户端，拼接文件路径前必须校验
-    if (!/^\d{2}\.[\u4e00-\u9fa5]+$/.test(guaMark)) {
-      throw new Error("无效的卦象");
-    }
-    const guaDetail = await readFile(
-      path.join(process.cwd(), "lib/data/zhouyi", `${guaMark}.md`),
-      "utf8",
-    );
-    const explain = guaDetail
-      .match(/(\*\*台灣張銘仁[\s\S]*?)(?=周易第\d+卦)/)?.[1]
-      .replaceAll("\n\n", "\n");
-
-    const changeList: string[] = [];
-    if (guaChange !== "无变爻") {
-      guaChange
-        .split(":")[1]
-        .trim()
-        .split(",")
-        .forEach((change) => {
-          const detail = guaDetail
-            .match(`(\\*\\*${change}變卦[\\s\\S]*?)(?=${guaTitle}|$)`)?.[1]
-            .replaceAll("\n\n", "\n");
-          if (detail) {
-            changeList.push(detail.trim());
-          }
-        });
-    }
+    const { system, user } = await buildMessages(prompt, yaoList);
 
     const { fullStream } = streamText({
       temperature: 0.5,
       model: openai(model),
       messages: [
-        {
-          role: "system",
-          content: `你是一位精通《周易》的AI助手，根据用户提供的卦象和问题，提供准确的卦象解读和实用建议
-任务要求：逻辑清晰，语气得当
-1. 解读卦象：分析主卦、变爻及变卦，解读整体趋势和吉凶
-2. 关联问题：针对用户问题，结合卦象信息，提供具体分析
-3. 提供建议：根据卦象启示，给出切实可行的建议，帮助用户解决实际问题`,
-        },
-        {
-          role: "user",
-          content: `我摇到的卦象：${guaTitle} ${guaResult} ${guaChange}
-我的问题：${prompt}
-
-${explain}
-${changeList.join("\n")}`,
-        },
+        { role: "system", content: system },
+        { role: "user", content: user },
       ],
+      maxTokens: MAX_TOKENS,
       maxRetries: 0,
     });
 

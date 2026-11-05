@@ -1,18 +1,22 @@
-import React, { createRef } from "react";
+import React, { createRef, useState } from "react";
 import clsx from "clsx";
 import todayJson from "@/lib/data/today.json";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
+import { QUESTION_MAX_LENGTH } from "@/lib/constant";
 
 const todayData: string[] = todayJson;
 
 function Question(props: { question: string; setQuestion: any }) {
   const inputRef = createRef<HTMLTextAreaElement>();
+  const [empty, setEmpty] = useState(false);
 
   function startClick() {
     const value = inputRef.current?.value;
-    if (value === "") {
+    if (!value?.trim()) {
+      setEmpty(true);
+      inputRef.current?.focus();
       return;
     }
     props.setQuestion(value);
@@ -35,10 +39,18 @@ function Question(props: { question: string; setQuestion: any }) {
           <Textarea
             ref={inputRef}
             placeholder="将使用 AI 为您解读"
-            className="resize-none"
+            className={clsx(
+              "resize-none",
+              empty && "border-destructive focus-visible:ring-destructive",
+            )}
             rows={4}
+            maxLength={QUESTION_MAX_LENGTH}
+            onChange={() => empty && setEmpty(false)}
           />
-          <div className="flex flex-row-reverse">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-destructive">
+              {empty && "请先输入您想算的事情"}
+            </span>
             <Button size="sm" onClick={startClick}>
               开始
             </Button>

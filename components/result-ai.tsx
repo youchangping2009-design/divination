@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { RotateCw } from "lucide-react";
+import { Check, Copy, RotateCw } from "lucide-react";
 import Markdown from "react-markdown";
 
 function ResultAI({
@@ -16,6 +16,27 @@ function ResultAI({
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  async function copyClick() {
+    const text = completion.replaceAll("**", "").replace(/^#+\s*/gm, "");
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // 微信等内置浏览器或非 HTTPS 页面不支持剪贴板 API
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      const ok = document.execCommand("copy");
+      textarea.remove();
+      if (!ok) {
+        return;
+      }
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
 
   useEffect(() => {
     setAutoScroll(isLoading);
@@ -59,7 +80,7 @@ function ResultAI({
           <span className="flex-1" />
           <div className="relative -top-4 flex w-fit items-center pr-1 text-muted-foreground sm:left-2 sm:pr-3">
             <RotateCw size={16} className="animate-spin" />
-            <span className="ml-1 text-sm">AI 分析中...</span>
+            <span className="ml-1 text-sm">AI 解卦中...</span>
           </div>
         </div>
       )}
@@ -78,10 +99,22 @@ function ResultAI({
           <Markdown className="prose dark:prose-invert">{completion}</Markdown>
         )}
         {!isLoading && (
-          <Button onClick={onCompletion} size="sm" className="mt-2">
-            <RotateCw size={18} className="mr-1" />
-            重新生成
-          </Button>
+          <div className="mt-2 flex items-center justify-between">
+            <Button onClick={onCompletion} size="sm">
+              <RotateCw size={18} className="mr-1" />
+              重新生成
+            </Button>
+            {completion && !error && (
+              <Button onClick={copyClick} size="sm" variant="outline">
+                {copied ? (
+                  <Check size={18} className="mr-1" />
+                ) : (
+                  <Copy size={18} className="mr-1" />
+                )}
+                {copied ? "已复制" : "复制解卦"}
+              </Button>
+            )}
+          </div>
         )}
       </div>
     </div>
