@@ -5,6 +5,8 @@ import { createStreamableValue } from "ai/rsc";
 import { ERROR_PREFIX } from "@/lib/constant";
 import { Yao } from "@/lib/gua";
 import { buildMessages } from "@/lib/prompt";
+import { getVisitor, saveLog } from "@/lib/log";
+import { after } from "next/server";
 
 const model = process.env.OPENAI_MODEL ?? "gpt-3.5-turbo";
 const openai = createOpenAI({ baseURL: process.env.OPENAI_BASE_URL });
@@ -13,11 +15,14 @@ const STREAM_INTERVAL = 60;
 const MAX_SIZE = 6;
 // 推理模型的思考过程也计入该上限，过低会截断回答
 const MAX_TOKENS = 4000;
+// 系统提示要求危机回复给出这两条热线，以此识别危机回复
+const CRISIS_HOTLINE = /12356|400-161-9995/;
 
 export async function getAnswer(prompt: string, yaoList: Yao[]) {
   const stream = createStreamableValue();
   try {
-    const { system, user } = await buildMessages(prompt, yaoList);
+    const { system, user, meta } = await buildMessages(prompt, yaoList);
+    const visitor = await getVisitor();
 
     const { fullStream } = streamText({
       temperature: 0.5,
@@ -48,11 +53,13 @@ export async function getAnswer(prompt: string, yaoList: Yao[]) {
       }
     }, STREAM_INTERVAL);
 
-    (async () => {
+    let answer = "";
+    const generation = (async () => {
       for await (const part of fullStream) {
         switch (part.type) {
           case "text-delta":
             buffer += part.textDelta;
+            answer += part.textDelta;
             break;
           case "error":
             const err = part.error as any;
@@ -65,6 +72,15 @@ export async function getAnswer(prompt: string, yaoList: Yao[]) {
       .finally(() => {
         done = true;
       });
+
+    after(async () => {
+      await generation;
+      await saveLog({
+        ...meta,
+        crisis: CRISIS_HOTLINE.test(answer),
+        visitor,
+      }).catch(console.error);
+    });
 
     return { data: stream.value };
   } catch (err: any) {

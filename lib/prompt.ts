@@ -5,7 +5,10 @@ import path from "node:path";
 
 // 卦文中缺少乾坤两卦六爻皆变时所用的用九、用六
 const YONG: Record<string, [string, string]> = {
-  "01.乾为天": ["用九", "用九。 見群龍无首，吉。\n象曰：用九，天德不可為首也。"],
+  "01.乾为天": [
+    "用九",
+    "用九。 見群龍无首，吉。\n象曰：用九，天德不可為首也。",
+  ],
   "02.坤为地": ["用六", "用六。 利永貞。\n象曰：用六永貞，以大終也。"],
 };
 
@@ -151,16 +154,21 @@ export async function buildMessages(prompt: unknown, yaoList: unknown) {
     traditionText(mainIsZhi ? zhiDetail : benDetail),
   );
 
-  console.log(question, ben.guaTitle, ben.guaResult, changes.map(name));
+  const meta = {
+    question,
+    gua: `${ben.guaTitle} ${ben.guaResult}`,
+    changes: changes.map(name).join("、") || "无",
+    zhi: zhi ? `${zhi.guaTitle} ${zhi.guaResult}` : null,
+  };
   const system = `${SYSTEM_PROMPT}
 
 【占断资料】
-本卦：${ben.guaTitle} ${ben.guaResult}
-变爻：${changes.map(name).join("、") || "无"}
-之卦：${zhi ? `${zhi.guaTitle} ${zhi.guaResult}` : "无"}
+本卦：${meta.gua}
+变爻：${meta.changes}
+之卦：${meta.zhi ?? "无"}
 占法：${rule}
 
 ${[...basis, ...background, reference].join("\n\n")}`;
   const user = `<question>${question.replace(/[<>]/g, "")}</question>`;
-  return { system, user };
+  return { system, user, meta };
 }
