@@ -56,7 +56,7 @@ function Question(props: { question: string; setQuestion: any }) {
             </Button>
           </div>
           <label className="mt-16 underline underline-offset-4">
-            🧐 让我猜猜您算什么东西？
+            🧐 要不算算这些事？
           </label>
           <div className="flex flex-wrap gap-3">
             {todayData.map(function (value, index) {
