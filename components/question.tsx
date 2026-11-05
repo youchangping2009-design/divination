@@ -38,7 +38,7 @@ function Question(props: { question: string; setQuestion: any }) {
           <label>您想算点什么？</label>
           <Textarea
             ref={inputRef}
-            placeholder="将使用 AI 为您解读"
+            placeholder="请输入心中所想……"
             className={clsx(
               "resize-none",
               empty && "border-destructive focus-visible:ring-destructive",
