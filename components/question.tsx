@@ -4,8 +4,7 @@ import todayJson from "@/lib/data/today.json";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
-import Link from "next/link";
-import { QUESTION_MAX_LENGTH, RETENTION_DAYS } from "@/lib/constant";
+import { QUESTION_MAX_LENGTH } from "@/lib/constant";
 
 const todayData: string[] = todayJson;
 
@@ -56,14 +55,6 @@ function Question(props: { question: string; setQuestion: any }) {
               开始
             </Button>
           </div>
-          <p className="-mt-2 text-xs text-muted-foreground">
-            AI 解读时会记录问题、卦象与大致地区，不保存完整 IP，保存{" "}
-            {RETENTION_DAYS} 天。
-            <Link href="/privacy" className="underline underline-offset-2">
-              隐私说明
-            </Link>
-          </p>
-
           <label className="mt-16 underline underline-offset-4">
             🧐 让我猜猜您算什么东西？
           </label>
