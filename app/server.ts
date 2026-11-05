@@ -3,6 +3,8 @@ import { streamText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createStreamableValue } from "ai/rsc";
 import { ERROR_PREFIX } from "@/lib/constant";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 
 const model = process.env.OPENAI_MODEL ?? "gpt-3.5-turbo";
 const openai = createOpenAI({ baseURL: process.env.OPENAI_BASE_URL });
@@ -20,10 +22,14 @@ export async function getAnswer(
   console.log(prompt, guaTitle, guaResult, guaChange);
   const stream = createStreamableValue();
   try {
-    const res = await fetch(
-      `https://raw.githubusercontent.com/sunls2/zhouyi/main/docs/${guaMark}/index.md`,
+    // guaMark 来自客户端，拼接文件路径前必须校验
+    if (!/^\d{2}\.[\u4e00-\u9fa5]+$/.test(guaMark)) {
+      throw new Error("无效的卦象");
+    }
+    const guaDetail = await readFile(
+      path.join(process.cwd(), "lib/data/zhouyi", `${guaMark}.md`),
+      "utf8",
     );
-    const guaDetail = await res.text();
     const explain = guaDetail
       .match(/(\*\*台灣張銘仁[\s\S]*?)(?=周易第\d+卦)/)?.[1]
       .replaceAll("\n\n", "\n");
