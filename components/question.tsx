@@ -49,7 +49,7 @@ function Question(props: {
     <div
       className={clsx(
         "ignore-animate flex w-full max-w-md flex-col gap-4",
-        props.question || "pt-6",
+        !props.question && "pt-6",
       )}
     >
       {props.question === "" ? (
@@ -106,17 +106,19 @@ function Question(props: {
       ) : null}
 
       {props.question && (
-        <div className="flex truncate rounded-md border bg-secondary p-2 shadow dark:border-0 dark:shadow-none">
+        <div className="flex items-start rounded-md border bg-secondary p-2 shadow dark:border-0 dark:shadow-none">
           {props.icon ?? (
             <Image
               width={24}
               height={24}
-              className="mr-2"
+              className="mr-2 shrink-0"
               src="/img/yin-yang.webp"
               alt="yinyang"
             />
           )}
-          {props.question}
+          <span className="min-w-0 whitespace-pre-wrap break-words">
+            {props.question}
+          </span>
         </div>
       )}
     </div>

@@ -85,7 +85,7 @@
     @apply h-full;
   }
 
-  footer {
+  body {
     padding-bottom: max(env(safe-area-inset-bottom), 8px);
   }
 }
