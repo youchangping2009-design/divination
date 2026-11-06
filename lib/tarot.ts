@@ -1,4 +1,5 @@
 import tarotList from "@/lib/data/tarot-list.json";
+import { randomInt } from "@/lib/random";
 
 export interface TarotCard {
   id: number;
@@ -14,16 +15,6 @@ export function cardInfo(id: number) {
 
 export function cardImage(id: number) {
   return `/img/tarot/${id}.jpg`;
-}
-
-// 拒绝采样，避免取模带来的偏差
-function randomInt(n: number) {
-  const buf = new Uint32Array(1);
-  const limit = Math.floor(0x100000000 / n) * n;
-  do {
-    crypto.getRandomValues(buf);
-  } while (buf[0] >= limit);
-  return buf[0] % n;
 }
 
 // Fisher–Yates 洗牌后取前三张，正逆位各自随机

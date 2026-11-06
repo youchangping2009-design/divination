@@ -1,6 +1,27 @@
 import type { Metadata } from "next";
-import { listLogs } from "@/lib/log";
+import { DivinationType, listLogs, LogRow } from "@/lib/log";
 import { RETENTION_DAYS } from "@/lib/constant";
+
+const RESULT_LABELS: Record<DivinationType, [string, string, string]> = {
+  周易: ["本卦", "变爻", "之卦"],
+  塔罗: ["过去", "现在", "未来"],
+  求签: ["签号", "等第", "掷筊"],
+};
+
+function ResultCell({ row }: { row: LogRow }) {
+  const labels = RESULT_LABELS[row.type] ?? RESULT_LABELS["周易"];
+  const values = [row.gua, row.changes, row.zhi];
+  return (
+    <div className="flex flex-col gap-0.5">
+      {labels.map((label, i) => (
+        <div key={label}>
+          <span className="text-muted-foreground">{label}：</span>
+          {values[i] ?? "—"}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +58,7 @@ export default async function Admin({
         <input
           name="q"
           defaultValue={keyword}
-          placeholder="按问题、卦名、牌名或城市搜索"
+          placeholder="按问题、卦名、牌名、签号或城市搜索"
           className="w-64 rounded-md border bg-background px-3 py-1.5"
         />
         <button className="rounded-md bg-primary px-3 py-1.5 text-primary-foreground">
@@ -52,9 +73,7 @@ export default async function Admin({
               <th className="p-2">时间</th>
               <th className="p-2">类型</th>
               <th className="p-2">问题</th>
-              <th className="p-2">本卦 / 过去</th>
-              <th className="p-2">变爻 / 现在</th>
-              <th className="p-2">之卦 / 未来</th>
+              <th className="p-2">占卜结果</th>
               <th className="p-2">地区</th>
               <th className="p-2">设备</th>
               <th className="p-2">访客</th>
@@ -76,9 +95,9 @@ export default async function Admin({
                     row.question
                   )}
                 </td>
-                <td className="p-2">{row.gua}</td>
-                <td className="p-2">{row.changes}</td>
-                <td className="p-2">{row.zhi ?? "—"}</td>
+                <td className="p-2">
+                  <ResultCell row={row} />
+                </td>
                 <td className="whitespace-nowrap p-2">
                   {[row.country, row.region, row.city]
                     .filter(Boolean)

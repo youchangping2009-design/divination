@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { CardBack } from "@/components/tarot-card";
+import { QianTube } from "@/components/qian-art";
 
 const BOX =
   "ignore-animate mt-6 flex w-full max-w-md items-center gap-4 rounded-md border p-4 shadow dark:border-0 dark:shadow-none";
@@ -21,6 +22,22 @@ export function ZhouyiIntro() {
         </h1>
         <p className="text-sm text-muted-foreground">
           心中默念所问之事，抛掷三枚铜钱六次，自下而上成卦，依《周易》经文与朱熹占法解读。
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export function QianIntro() {
+  return (
+    <div className={`${BOX} bg-red-50/60 dark:bg-secondary`}>
+      <QianTube className="h-16 w-12 shrink-0" />
+      <div className="flex flex-col gap-1">
+        <h1 className="text-lg font-medium text-red-800 dark:text-red-400">
+          观音灵签 · 一百签
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          心中默念所求之事，摇签后掷筊，得圣杯方为确认，依艋舺龙山寺版签文与签版圣意解读。
         </p>
       </div>
     </div>

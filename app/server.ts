@@ -7,6 +7,7 @@ import { Yao } from "@/lib/gua";
 import { buildMessages } from "@/lib/prompt";
 import { TarotCard } from "@/lib/tarot";
 import { buildTarotMessages } from "@/lib/tarot-prompt";
+import { buildQianMessages } from "@/lib/qian-prompt";
 import { DivinationType, getVisitor, saveLog } from "@/lib/log";
 import { after } from "next/server";
 
@@ -32,6 +33,10 @@ export async function getAnswer(prompt: string, yaoList: Yao[]) {
 
 export async function getTarotAnswer(prompt: string, cards: TarotCard[]) {
   return answer("塔罗", async () => buildTarotMessages(prompt, cards));
+}
+
+export async function getQianAnswer(prompt: string, no: number, tries: number) {
+  return answer("求签", async () => buildQianMessages(prompt, no, tries));
 }
 
 async function answer(type: DivinationType, build: () => Promise<Messages>) {

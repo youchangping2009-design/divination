@@ -80,9 +80,10 @@ export async function getVisitor() {
 
 export type Visitor = Awaited<ReturnType<typeof getVisitor>>;
 
-export type DivinationType = "周易" | "塔罗";
+export type DivinationType = "周易" | "塔罗" | "求签";
 
-// gua、changes、zhi 三列：周易依次存本卦、变爻、之卦，塔罗依次存过去、现在、未来三张牌
+// gua、changes、zhi 三列：周易依次存本卦、变爻、之卦，塔罗依次存过去、现在、未来三张牌，
+// 求签依次存签号与典故、等第、掷筊结果
 export async function saveLog(record: {
   type: DivinationType;
   question: string;

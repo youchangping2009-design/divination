@@ -88,6 +88,25 @@ module.exports = {
           "0%, 100%": { transform: "translateX(0) rotate(0deg)" },
           "40%": { transform: "translateX(75%) rotate(12deg)" },
         },
+        "qian-shake": {
+          "0%, 100%": { transform: "rotate(-14deg) translateY(0)" },
+          "50%": { transform: "rotate(14deg) translateY(-6px)" },
+        },
+        "qian-drop": {
+          "0%": {
+            opacity: "0",
+            transform: "translate(-30px, -50px) rotate(-35deg)",
+          },
+          "70%": { opacity: "1", transform: "translate(0, 4px) rotate(4deg)" },
+          "100%": { opacity: "1", transform: "none" },
+        },
+        "jiao-toss": {
+          "0%": { transform: "translateY(0) rotate(0deg)" },
+          "45%": { transform: "translateY(-70px) rotate(400deg)" },
+          "85%": { transform: "translateY(0) rotate(700deg)" },
+          "92%": { transform: "translateY(-6px) rotate(715deg)" },
+          "100%": { transform: "translateY(0) rotate(720deg)" },
+        },
         "tarot-deal": {
           "0%": {
             opacity: "0",

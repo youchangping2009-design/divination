@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/header";
 import Tarot from "@/components/tarot";
+import Footer from "@/components/footer";
 
 export const metadata: Metadata = {
   title: "AI 占卜 - 塔罗占卜，GPT-6 解牌",
@@ -13,6 +14,7 @@ export default function TarotPage() {
     <>
       <Header />
       <Tarot />
+      <Footer />
     </>
   );
 }

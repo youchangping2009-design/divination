@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
 const TABS = [
+  { href: "/qian", label: "求签", active: "bg-red-700 text-white" },
   { href: "/", label: "周易", active: "bg-amber-700 text-white" },
   { href: "/tarot", label: "塔罗", active: "bg-purple-700 text-white" },
 ];

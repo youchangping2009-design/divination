@@ -45,3 +45,9 @@ export const tarotSounds = {
   deal: createSound("/audio/tarot-deal.m4a"),
   flip: createSound("/audio/tarot-flip.m4a"),
 };
+
+export const qianSounds = {
+  shake: createSound("/audio/qian-shake.m4a"),
+  drop: createSound("/audio/qian-drop.m4a"),
+  jiao: createSound("/audio/qian-jiao.m4a"),
+};
