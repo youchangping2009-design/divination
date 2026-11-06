@@ -5,9 +5,9 @@ import Umami from "@/components/umami";
 import { ThemeProvider } from "next-themes";
 
 export const metadata: Metadata = {
-  title: "AI 占卜 - 周易算卦，GPT-6 解卦",
+  title: "AI 占卜 - 求签、周易、塔罗，GPT-6 解读",
   description:
-    "AI 算卦 - 通过进行六次硬币的随机卜筮，生成卦象，并使用 AI 对卦象进行分析｜AI 算命、在线算命、在线算卦、周易易经64卦",
+    "AI 占卜 - 观音灵签求签、周易六爻起卦、韦特塔罗三张牌阵，使用 AI 结合问题解读｜在线求签、在线算卦、塔罗占卜",
   appleWebApp: {
     title: "AI 占卜",
   },
