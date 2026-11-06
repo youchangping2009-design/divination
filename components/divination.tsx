@@ -211,7 +211,12 @@ function Divination() {
                   重来
                 </Button>
                 {resultAi ? null : (
-                  <Button size="sm" onClick={aiClick} disabled={rotation}>
+                  <Button
+                    size="sm"
+                    onClick={aiClick}
+                    disabled={rotation}
+                    className="bg-amber-700 text-white hover:bg-amber-800"
+                  >
                     <BrainCircuit size={16} className="mr-1" />
                     AI 解读
                   </Button>

@@ -203,7 +203,11 @@ function Tarot() {
             重来
           </Button>
           {resultAi ? null : (
-            <Button size="sm" onClick={aiClick}>
+            <Button
+              size="sm"
+              onClick={aiClick}
+              className="bg-purple-700 text-white hover:bg-purple-800"
+            >
               <BrainCircuit size={16} className="mr-1" />
               AI 解读
             </Button>
