@@ -3,7 +3,7 @@ import Link from "next/link";
 import { RETENTION_DAYS } from "@/lib/constant";
 
 export const metadata: Metadata = {
-  title: "隐私说明 - AI 算卦",
+  title: "隐私说明 - AI 占卜",
 };
 
 export default function Privacy() {

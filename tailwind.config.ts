@@ -80,6 +80,21 @@ module.exports = {
           "0%": { transform: "translateX(100%)" },
           "100%": { transform: "translateX(0)" },
         },
+        "tarot-shuffle-left": {
+          "0%, 100%": { transform: "translateX(0) rotate(0deg)" },
+          "40%": { transform: "translateX(-75%) rotate(-12deg)" },
+        },
+        "tarot-shuffle-right": {
+          "0%, 100%": { transform: "translateX(0) rotate(0deg)" },
+          "40%": { transform: "translateX(75%) rotate(12deg)" },
+        },
+        "tarot-deal": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(-48px) scale(0.85)",
+          },
+          "100%": { opacity: "1", transform: "none" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

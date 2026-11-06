@@ -25,6 +25,7 @@ function ensureTable() {
       browser TEXT
     )`;
     await sql!`CREATE INDEX IF NOT EXISTS divination_logs_created_at ON divination_logs (created_at)`;
+    await sql!`ALTER TABLE divination_logs ADD COLUMN IF NOT EXISTS type TEXT NOT NULL DEFAULT '周易'`;
   })().catch((err) => {
     ready = null;
     throw err;
@@ -79,7 +80,11 @@ export async function getVisitor() {
 
 export type Visitor = Awaited<ReturnType<typeof getVisitor>>;
 
+export type DivinationType = "周易" | "塔罗";
+
+// gua、changes、zhi 三列：周易依次存本卦、变爻、之卦，塔罗依次存过去、现在、未来三张牌
 export async function saveLog(record: {
+  type: DivinationType;
   question: string;
   gua: string;
   changes: string;
@@ -94,8 +99,8 @@ export async function saveLog(record: {
   const { visitor: v } = record;
   // 触发危机回复的问题属于高度敏感信息，只记标记不存原文
   await sql`INSERT INTO divination_logs
-    (question, gua, changes, zhi, crisis, ip_hash, country, region, city, device, browser)
-    VALUES (${record.crisis ? null : record.question}, ${record.gua}, ${record.changes}, ${record.zhi},
+    (type, question, gua, changes, zhi, crisis, ip_hash, country, region, city, device, browser)
+    VALUES (${record.type}, ${record.crisis ? null : record.question}, ${record.gua}, ${record.changes}, ${record.zhi},
       ${record.crisis}, ${v.ipHash}, ${v.country}, ${v.region}, ${v.city}, ${v.device}, ${v.browser})`;
   await sql`DELETE FROM divination_logs WHERE created_at < now() - make_interval(days => ${RETENTION_DAYS})`;
 }
@@ -103,6 +108,7 @@ export async function saveLog(record: {
 export type LogRow = {
   id: string;
   created_at: string;
+  type: DivinationType;
   question: string | null;
   gua: string;
   changes: string;
@@ -123,7 +129,8 @@ export async function listLogs(keyword: string, limit = 200) {
   await ensureTable();
   const pattern = `%${keyword}%`;
   const rows = (await sql`SELECT * FROM divination_logs
-    WHERE ${keyword} = '' OR question ILIKE ${pattern} OR gua ILIKE ${pattern} OR city ILIKE ${pattern}
+    WHERE ${keyword} = '' OR question ILIKE ${pattern} OR gua ILIKE ${pattern}
+      OR changes ILIKE ${pattern} OR zhi ILIKE ${pattern} OR city ILIKE ${pattern}
     ORDER BY created_at DESC LIMIT ${limit}`) as LogRow[];
   const [stats] = await sql`SELECT
     count(*)::int AS total,

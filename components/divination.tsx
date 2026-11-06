@@ -10,6 +10,8 @@ import { animateChildren } from "@/lib/animate";
 import { getGua, lineName, toYao } from "@/lib/gua";
 import { playTossSound, unlockSound } from "@/lib/sound";
 import TurtleIcon from "@/components/turtle-icon";
+import { ZhouyiIntro } from "@/components/intro";
+import zhouyiPresets from "@/lib/data/zhouyi-presets.json";
 import { getAnswer } from "@/app/server";
 import { readStreamableValue } from "ai/rsc";
 import { Button } from "./ui/button";
@@ -160,12 +162,17 @@ function Divination() {
       ref={flexRef}
       className="gap mx-auto flex h-0 w-[90%] flex-1 flex-col flex-nowrap items-center overflow-y-auto"
     >
+      {inputQuestion && <ZhouyiIntro />}
+
       <Question
         question={question}
         setQuestion={(value: string) => {
           unlockSound();
           setQuestion(value);
         }}
+        label="您想决断什么？"
+        startLabel="开始起卦"
+        presets={zhouyiPresets}
       />
 
       {!resultAi && !inputQuestion && (

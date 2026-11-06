@@ -5,7 +5,7 @@ import { RETENTION_DAYS } from "@/lib/constant";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "解卦记录",
+  title: "占卜记录",
   robots: { index: false, follow: false },
 };
 
@@ -27,7 +27,7 @@ export default async function Admin({
 
   return (
     <main className="h-0 flex-1 overflow-auto p-4 text-sm sm:p-6">
-      <h1 className="text-lg font-medium">解卦记录</h1>
+      <h1 className="text-lg font-medium">占卜记录</h1>
       <p className="mt-1 text-muted-foreground">
         共 {total} 条（保留 {RETENTION_DAYS} 天），今日 {today} 条，独立访客{" "}
         {visitors} 个
@@ -37,7 +37,7 @@ export default async function Admin({
         <input
           name="q"
           defaultValue={keyword}
-          placeholder="按问题、卦名或城市搜索"
+          placeholder="按问题、卦名、牌名或城市搜索"
           className="w-64 rounded-md border bg-background px-3 py-1.5"
         />
         <button className="rounded-md bg-primary px-3 py-1.5 text-primary-foreground">
@@ -50,10 +50,11 @@ export default async function Admin({
           <thead className="text-muted-foreground">
             <tr className="border-b">
               <th className="p-2">时间</th>
+              <th className="p-2">类型</th>
               <th className="p-2">问题</th>
-              <th className="p-2">本卦</th>
-              <th className="p-2">变爻</th>
-              <th className="p-2">之卦</th>
+              <th className="p-2">本卦 / 过去</th>
+              <th className="p-2">变爻 / 现在</th>
+              <th className="p-2">之卦 / 未来</th>
               <th className="p-2">地区</th>
               <th className="p-2">设备</th>
               <th className="p-2">访客</th>
@@ -65,6 +66,7 @@ export default async function Admin({
                 <td className="whitespace-nowrap p-2">
                   {timeFormat.format(new Date(row.created_at))}
                 </td>
+                <td className="whitespace-nowrap p-2">{row.type}</td>
                 <td className="max-w-xs p-2">
                   {row.crisis ? (
                     <span className="text-destructive">

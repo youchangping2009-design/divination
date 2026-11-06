@@ -5,7 +5,9 @@ import { createStreamableValue } from "ai/rsc";
 import { ERROR_PREFIX } from "@/lib/constant";
 import { Yao } from "@/lib/gua";
 import { buildMessages } from "@/lib/prompt";
-import { getVisitor, saveLog } from "@/lib/log";
+import { TarotCard } from "@/lib/tarot";
+import { buildTarotMessages } from "@/lib/tarot-prompt";
+import { DivinationType, getVisitor, saveLog } from "@/lib/log";
 import { after } from "next/server";
 
 const model = process.env.OPENAI_MODEL ?? "gpt-3.5-turbo";
@@ -18,10 +20,24 @@ const MAX_TOKENS = 4000;
 // 系统提示要求危机回复给出这两条热线，以此识别危机回复
 const CRISIS_HOTLINE = /12356|400-161-9995/;
 
+type Messages = {
+  system: string;
+  user: string;
+  meta: { question: string; gua: string; changes: string; zhi: string | null };
+};
+
 export async function getAnswer(prompt: string, yaoList: Yao[]) {
+  return answer("周易", () => buildMessages(prompt, yaoList));
+}
+
+export async function getTarotAnswer(prompt: string, cards: TarotCard[]) {
+  return answer("塔罗", async () => buildTarotMessages(prompt, cards));
+}
+
+async function answer(type: DivinationType, build: () => Promise<Messages>) {
   const stream = createStreamableValue();
   try {
-    const { system, user, meta } = await buildMessages(prompt, yaoList);
+    const { system, user, meta } = await build();
     const visitor = await getVisitor();
 
     const { fullStream } = streamText({
@@ -77,6 +93,7 @@ export async function getAnswer(prompt: string, yaoList: Yao[]) {
       await generation;
       await saveLog({
         ...meta,
+        type,
         crisis: CRISIS_HOTLINE.test(answer),
         visitor,
       }).catch(console.error);

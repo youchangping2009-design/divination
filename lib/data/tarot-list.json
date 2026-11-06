@@ -1,0 +1,314 @@
+[
+  {
+    "name": "The Fool",
+    "zh": "愚者"
+  },
+  {
+    "name": "The Magician",
+    "zh": "魔术师"
+  },
+  {
+    "name": "The High Priestess",
+    "zh": "女祭司"
+  },
+  {
+    "name": "The Empress",
+    "zh": "皇后"
+  },
+  {
+    "name": "The Emperor",
+    "zh": "皇帝"
+  },
+  {
+    "name": "The Hierophant",
+    "zh": "教皇"
+  },
+  {
+    "name": "The Lovers",
+    "zh": "恋人"
+  },
+  {
+    "name": "The Chariot",
+    "zh": "战车"
+  },
+  {
+    "name": "Strength",
+    "zh": "力量"
+  },
+  {
+    "name": "The Hermit",
+    "zh": "隐士"
+  },
+  {
+    "name": "Wheel of Fortune",
+    "zh": "命运之轮"
+  },
+  {
+    "name": "Justice",
+    "zh": "正义"
+  },
+  {
+    "name": "The Hanged Man",
+    "zh": "倒吊人"
+  },
+  {
+    "name": "Death",
+    "zh": "死神"
+  },
+  {
+    "name": "Temperance",
+    "zh": "节制"
+  },
+  {
+    "name": "The Devil",
+    "zh": "恶魔"
+  },
+  {
+    "name": "The Tower",
+    "zh": "高塔"
+  },
+  {
+    "name": "The Star",
+    "zh": "星星"
+  },
+  {
+    "name": "The Moon",
+    "zh": "月亮"
+  },
+  {
+    "name": "The Sun",
+    "zh": "太阳"
+  },
+  {
+    "name": "Judgement",
+    "zh": "审判"
+  },
+  {
+    "name": "The World",
+    "zh": "世界"
+  },
+  {
+    "name": "Ace of Wands",
+    "zh": "权杖王牌"
+  },
+  {
+    "name": "Two of Wands",
+    "zh": "权杖二"
+  },
+  {
+    "name": "Three of Wands",
+    "zh": "权杖三"
+  },
+  {
+    "name": "Four of Wands",
+    "zh": "权杖四"
+  },
+  {
+    "name": "Five of Wands",
+    "zh": "权杖五"
+  },
+  {
+    "name": "Six of Wands",
+    "zh": "权杖六"
+  },
+  {
+    "name": "Seven of Wands",
+    "zh": "权杖七"
+  },
+  {
+    "name": "Eight of Wands",
+    "zh": "权杖八"
+  },
+  {
+    "name": "Nine of Wands",
+    "zh": "权杖九"
+  },
+  {
+    "name": "Ten of Wands",
+    "zh": "权杖十"
+  },
+  {
+    "name": "Page of Wands",
+    "zh": "权杖侍从"
+  },
+  {
+    "name": "Knight of Wands",
+    "zh": "权杖骑士"
+  },
+  {
+    "name": "Queen of Wands",
+    "zh": "权杖皇后"
+  },
+  {
+    "name": "King of Wands",
+    "zh": "权杖国王"
+  },
+  {
+    "name": "Ace of Cups",
+    "zh": "圣杯王牌"
+  },
+  {
+    "name": "Two of Cups",
+    "zh": "圣杯二"
+  },
+  {
+    "name": "Three of Cups",
+    "zh": "圣杯三"
+  },
+  {
+    "name": "Four of Cups",
+    "zh": "圣杯四"
+  },
+  {
+    "name": "Five of Cups",
+    "zh": "圣杯五"
+  },
+  {
+    "name": "Six of Cups",
+    "zh": "圣杯六"
+  },
+  {
+    "name": "Seven of Cups",
+    "zh": "圣杯七"
+  },
+  {
+    "name": "Eight of Cups",
+    "zh": "圣杯八"
+  },
+  {
+    "name": "Nine of Cups",
+    "zh": "圣杯九"
+  },
+  {
+    "name": "Ten of Cups",
+    "zh": "圣杯十"
+  },
+  {
+    "name": "Page of Cups",
+    "zh": "圣杯侍从"
+  },
+  {
+    "name": "Knight of Cups",
+    "zh": "圣杯骑士"
+  },
+  {
+    "name": "Queen of Cups",
+    "zh": "圣杯皇后"
+  },
+  {
+    "name": "King of Cups",
+    "zh": "圣杯国王"
+  },
+  {
+    "name": "Ace of Swords",
+    "zh": "宝剑王牌"
+  },
+  {
+    "name": "Two of Swords",
+    "zh": "宝剑二"
+  },
+  {
+    "name": "Three of Swords",
+    "zh": "宝剑三"
+  },
+  {
+    "name": "Four of Swords",
+    "zh": "宝剑四"
+  },
+  {
+    "name": "Five of Swords",
+    "zh": "宝剑五"
+  },
+  {
+    "name": "Six of Swords",
+    "zh": "宝剑六"
+  },
+  {
+    "name": "Seven of Swords",
+    "zh": "宝剑七"
+  },
+  {
+    "name": "Eight of Swords",
+    "zh": "宝剑八"
+  },
+  {
+    "name": "Nine of Swords",
+    "zh": "宝剑九"
+  },
+  {
+    "name": "Ten of Swords",
+    "zh": "宝剑十"
+  },
+  {
+    "name": "Page of Swords",
+    "zh": "宝剑侍从"
+  },
+  {
+    "name": "Knight of Swords",
+    "zh": "宝剑骑士"
+  },
+  {
+    "name": "Queen of Swords",
+    "zh": "宝剑皇后"
+  },
+  {
+    "name": "King of Swords",
+    "zh": "宝剑国王"
+  },
+  {
+    "name": "Ace of Pentacles",
+    "zh": "星币王牌"
+  },
+  {
+    "name": "Two of Pentacles",
+    "zh": "星币二"
+  },
+  {
+    "name": "Three of Pentacles",
+    "zh": "星币三"
+  },
+  {
+    "name": "Four of Pentacles",
+    "zh": "星币四"
+  },
+  {
+    "name": "Five of Pentacles",
+    "zh": "星币五"
+  },
+  {
+    "name": "Six of Pentacles",
+    "zh": "星币六"
+  },
+  {
+    "name": "Seven of Pentacles",
+    "zh": "星币七"
+  },
+  {
+    "name": "Eight of Pentacles",
+    "zh": "星币八"
+  },
+  {
+    "name": "Nine of Pentacles",
+    "zh": "星币九"
+  },
+  {
+    "name": "Ten of Pentacles",
+    "zh": "星币十"
+  },
+  {
+    "name": "Page of Pentacles",
+    "zh": "星币侍从"
+  },
+  {
+    "name": "Knight of Pentacles",
+    "zh": "星币骑士"
+  },
+  {
+    "name": "Queen of Pentacles",
+    "zh": "星币皇后"
+  },
+  {
+    "name": "King of Pentacles",
+    "zh": "星币国王"
+  }
+]

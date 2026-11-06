@@ -8,11 +8,13 @@ function ResultAI({
   isLoading,
   onCompletion,
   error,
+  action = "解卦",
 }: {
   completion: string;
   isLoading: boolean;
   onCompletion: () => void;
   error: string;
+  action?: string;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(false);
@@ -80,7 +82,7 @@ function ResultAI({
           <span className="flex-1" />
           <div className="relative -top-4 flex w-fit items-center pr-1 text-muted-foreground sm:left-2 sm:pr-3">
             <RotateCw size={16} className="animate-spin" />
-            <span className="ml-1 text-sm">AI 解卦中...</span>
+            <span className="ml-1 text-sm">AI {action}中...</span>
           </div>
         </div>
       )}
@@ -111,7 +113,7 @@ function ResultAI({
                 ) : (
                   <Copy size={18} className="mr-1" />
                 )}
-                {copied ? "已复制" : "复制解卦"}
+                {copied ? "已复制" : `复制${action}`}
               </Button>
             )}
           </div>
