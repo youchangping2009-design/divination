@@ -16,10 +16,9 @@ import {
   TarotCard,
 } from "@/lib/tarot";
 import { getTarotAnswer } from "@/app/server";
-import { readStreamableValue } from "ai/rsc";
+import { useAnswer } from "@/lib/use-answer";
 import { Button } from "./ui/button";
 import { BrainCircuit, ListRestart, Sparkles } from "lucide-react";
-import { ERROR_PREFIX } from "@/lib/constant";
 
 // 第 0 步洗牌；之后每张牌先发牌（奇数步）再翻开（偶数步）
 const STEP_DELAYS = [2400, 500, 800, 500, 800, 500, 800];
@@ -27,12 +26,14 @@ const DONE_STEP = STEP_DELAYS.length;
 const DECK_SIZE = 6;
 
 function Tarot() {
-  const [error, setError] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [completion, setCompletion] = useState<string>("");
-
   const [question, setQuestion] = useState("");
   const [cards, setCards] = useState<TarotCard[] | null>(null);
+  const {
+    completion,
+    isLoading,
+    error,
+    run: onCompletion,
+  } = useAnswer(() => getTarotAnswer(question, cards!));
   const [step, setStep] = useState(0);
   const [resultAi, setResultAi] = useState(false);
 
@@ -60,34 +61,6 @@ function Tarot() {
     }
     (step % 2 ? tarotSounds.deal : tarotSounds.flip).play();
   }, [cards, step]);
-
-  async function onCompletion() {
-    setError("");
-    setCompletion("");
-    setIsLoading(true);
-    try {
-      const { data, error } = await getTarotAnswer(question, cards!);
-      if (error) {
-        setError(error);
-        return;
-      }
-      if (data) {
-        let ret = "";
-        for await (const delta of readStreamableValue(data)) {
-          if (delta.startsWith(ERROR_PREFIX)) {
-            setError(delta.slice(ERROR_PREFIX.length));
-            return;
-          }
-          ret += delta;
-          setCompletion(ret);
-        }
-      }
-    } catch (err: any) {
-      setError(err.message ?? err);
-    } finally {
-      setIsLoading(false);
-    }
-  }
 
   function start(value: string) {
     // 洗牌音效在点击中直接播放，发牌和翻牌由定时器触发，需先解锁

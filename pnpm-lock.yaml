@@ -23,9 +23,6 @@ importers:
       ai:
         specifier: ^4.0.33
         version: 4.0.33(react@18.3.1)(zod@3.23.8)
-      aimless.js:
-        specifier: ^1.0.4
-        version: 1.0.4
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -832,9 +829,6 @@ packages:
         optional: true
       zod:
         optional: true
-
-  aimless.js@1.0.4:
-    resolution: {integrity: sha512-Cq3hfoto+Ps3Aqr0n82bXqUEr7d/2H5+SDi1ok3nHcfp1uWDMptdZxY7fqnsh/dHYV/OZoZqEIRr/eiCFmptRA==}
 
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
@@ -3223,8 +3217,6 @@ snapshots:
     optionalDependencies:
       react: 18.3.1
       zod: 3.23.8
-
-  aimless.js@1.0.4: {}
 
   ajv@6.12.6:
     dependencies:

@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Coin from "@/components/coin";
 import Hexagram, { HexagramObj } from "@/components/hexagram";
-import { bool } from "aimless.js";
 import Result, { ResultObj } from "@/components/result";
 import Question from "@/components/question";
 import ResultAI from "@/components/result-ai";
@@ -13,49 +12,18 @@ import TurtleIcon from "@/components/turtle-icon";
 import { ZhouyiIntro } from "@/components/intro";
 import zhouyiPresets from "@/lib/data/zhouyi-presets.json";
 import { getAnswer } from "@/app/server";
-import { readStreamableValue } from "ai/rsc";
+import { useAnswer } from "@/lib/use-answer";
+import { randomInt } from "@/lib/random";
 import { Button } from "./ui/button";
 import { BrainCircuit, ListRestart } from "lucide-react";
-import { ERROR_PREFIX } from "@/lib/constant";
 
 const AUTO_DELAY = 600;
 
+function coinFront() {
+  return randomInt(2) === 1;
+}
+
 function Divination() {
-  const [error, setError] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [completion, setCompletion] = useState<string>("");
-
-  async function onCompletion() {
-    setError("");
-    setCompletion("");
-    setIsLoading(true);
-    try {
-      const { data, error } = await getAnswer(
-        question,
-        hexagramList.map((value) => toYao(value.yang, !!value.change)),
-      );
-      if (error) {
-        setError(error);
-        return;
-      }
-      if (data) {
-        let ret = "";
-        for await (const delta of readStreamableValue(data)) {
-          if (delta.startsWith(ERROR_PREFIX)) {
-            setError(delta.slice(ERROR_PREFIX.length));
-            return;
-          }
-          ret += delta;
-          setCompletion(ret);
-        }
-      }
-    } catch (err: any) {
-      setError(err.message ?? err);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   const [frontList, setFrontList] = useState([true, true, true]);
   const [rotation, setRotation] = useState(false);
 
@@ -63,6 +31,17 @@ function Divination() {
 
   const [resultObj, setResultObj] = useState<ResultObj | null>(null);
   const [question, setQuestion] = useState("");
+  const {
+    completion,
+    isLoading,
+    error,
+    run: onCompletion,
+  } = useAnswer(() =>
+    getAnswer(
+      question,
+      hexagramList.map((value) => toYao(value.yang, !!value.change)),
+    ),
+  );
 
   const [resultAi, setResultAi] = useState(false);
 
@@ -110,16 +89,10 @@ function Divination() {
     if (hexagramList.length >= 6) {
       setHexagramList([]);
     }
-    setFrontList([bool(), bool(), bool()]);
+    setFrontList([coinFront(), coinFront(), coinFront()]);
     setRotation(true);
     playTossSound();
     setCount(count + 1);
-  }
-
-  async function testClick() {
-    for (let i = 0; i < 6; i++) {
-      onTransitionEnd();
-    }
   }
 
   function restartClick() {
@@ -128,7 +101,6 @@ function Divination() {
     setQuestion("");
     setResultAi(false);
     setCount(0);
-    stop();
   }
 
   function aiClick() {
@@ -140,7 +112,7 @@ function Divination() {
     if (list.length != 6) {
       return;
     }
-    const changeList: String[] = [];
+    const changeList: string[] = [];
     list.forEach((value, index) => {
       if (!value.change) {
         return;

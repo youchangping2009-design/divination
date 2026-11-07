@@ -51,11 +51,17 @@ function decode(value: string | null) {
   }
 }
 
+export async function getIp() {
+  const h = await headers();
+  return (
+    h.get("x-forwarded-for")?.split(",")[0].trim() || h.get("x-real-ip") || ""
+  );
+}
+
 // 不保存原始 IP，只保存加盐哈希，用于区分同一访客
 export async function getVisitor() {
   const h = await headers();
-  const ip =
-    h.get("x-forwarded-for")?.split(",")[0].trim() || h.get("x-real-ip") || "";
+  const ip = await getIp();
   const salt = process.env.IP_HASH_SALT;
   const ua = h.get("user-agent") ?? "";
   return {

@@ -7,17 +7,18 @@ import { animateChildren } from "@/lib/animate";
 import { DREAM_MAX_LENGTH, DreamMatch, matchDream } from "@/lib/dream";
 import dreamPresets from "@/lib/data/dream-presets.json";
 import { getDreamAnswer } from "@/app/server";
-import { readStreamableValue } from "ai/rsc";
+import { useAnswer } from "@/lib/use-answer";
 import { Button } from "./ui/button";
 import { BrainCircuit, ListRestart, MoonStar } from "lucide-react";
-import { ERROR_PREFIX } from "@/lib/constant";
 
 function Dream() {
-  const [error, setError] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [completion, setCompletion] = useState<string>("");
-
   const [dream, setDream] = useState("");
+  const {
+    completion,
+    isLoading,
+    error,
+    run: onCompletion,
+  } = useAnswer(() => getDreamAnswer(dream));
   const [matches, setMatches] = useState<DreamMatch[]>([]);
   const [resultAi, setResultAi] = useState(false);
 
@@ -30,34 +31,6 @@ function Dream() {
     const observer = animateChildren(flexRef.current);
     return () => observer.disconnect();
   }, []);
-
-  async function onCompletion() {
-    setError("");
-    setCompletion("");
-    setIsLoading(true);
-    try {
-      const { data, error } = await getDreamAnswer(dream);
-      if (error) {
-        setError(error);
-        return;
-      }
-      if (data) {
-        let ret = "";
-        for await (const delta of readStreamableValue(data)) {
-          if (delta.startsWith(ERROR_PREFIX)) {
-            setError(delta.slice(ERROR_PREFIX.length));
-            return;
-          }
-          ret += delta;
-          setCompletion(ret);
-        }
-      }
-    } catch (err: any) {
-      setError(err.message ?? err);
-    } finally {
-      setIsLoading(false);
-    }
-  }
 
   function start(value: string) {
     setDream(value);

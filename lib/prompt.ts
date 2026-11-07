@@ -1,7 +1,6 @@
 import { QUESTION_MAX_LENGTH } from "@/lib/constant";
 import { getGua, isChange, isYang, lineName, Yao } from "@/lib/gua";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
+import zhouyi from "@/lib/data/zhouyi.json";
 
 // 卦文中缺少乾坤两卦六爻皆变时所用的用九、用六
 const YONG: Record<string, [string, string]> = {
@@ -48,50 +47,17 @@ export function questionTag(question: string) {
   return `<question>${question.replace(/[<>]/g, "")}</question>`;
 }
 
-function readGua(guaMark: string) {
-  return readFile(
-    path.join(process.cwd(), "lib/data/zhouyi", `${guaMark}.md`),
-    "utf8",
-  );
-}
+type GuaDetail = { gua: string; yao: Record<string, string>; tradition: string };
 
-function between(detail: string, title: string, end: string) {
-  const start = detail.indexOf(title);
-  if (start === -1) {
-    return "";
-  }
-  return detail
-    .slice(start + title.length, detail.indexOf(end, start))
-    .replaceAll("**", "")
-    .trim();
-}
-
-// 卦辞与大象：标题之后、第一个「白話文解釋」之前
-function guaText(detail: string) {
-  return (detail.match(/^# .*\n([\s\S]*?)\*\*白話文解釋\*\*/m)?.[1] ?? "")
-    .replaceAll("**", "")
-    .trim();
-}
-
-// 爻辞与小象，附白话解释
-function yaoText(detail: string, name: string) {
-  const text = between(detail, `**${name}爻辭**`, "**白話文解釋**");
-  const rest = detail.slice(detail.indexOf(`**${name}爻辭**`));
-  const plain = between(rest, "**白話文解釋**", "**邵雍河洛理數爻辭解釋**");
-  return plain ? `${text}\n白话：${plain}` : text;
-}
-
-// 传统解卦：卦象总述及大象、运势、事业、经商、求名、婚恋、决策
-function traditionText(detail: string) {
-  return between(detail, "**傳統解卦**", "**台灣張銘仁解卦**");
-}
+// 由 scripts/build-zhouyi.mjs 从 lib/data/zhouyi/*.md 生成
+const GUA_DETAILS: Record<string, GuaDetail> = zhouyi;
 
 function section(label: string, text: string) {
   return `【${label}】\n${text}`;
 }
 
 // 参数来自客户端，卦象一律由六爻在服务端重新推算
-export async function buildMessages(prompt: unknown, yaoList: unknown) {
+export function buildMessages(prompt: unknown, yaoList: unknown) {
   const question = parseQuestion(prompt);
   if (
     !Array.isArray(yaoList) ||
@@ -108,18 +74,18 @@ export async function buildMessages(prompt: unknown, yaoList: unknown) {
   const name = (i: number) => lineName(i, isYang(list[i]));
 
   const ben = getGua(list.map(isYang));
-  const benDetail = await readGua(ben.guaMark);
+  const benDetail = GUA_DETAILS[ben.guaMark];
   const zhi = changes.length
     ? getGua(list.map((yao) => isYang(yao) !== isChange(yao)))
     : null;
-  const zhiDetail = zhi ? await readGua(zhi.guaMark) : "";
+  const zhiDetail = zhi ? GUA_DETAILS[zhi.guaMark] : null;
 
-  const benGua = section("主要依据·本卦卦辞", guaText(benDetail));
-  const zhiGua = section("主要依据·之卦卦辞", guaText(zhiDetail));
+  const benGua = section("主要依据·本卦卦辞", benDetail.gua);
+  const zhiGua = section("主要依据·之卦卦辞", zhiDetail?.gua ?? "");
   const benYao = (i: number) =>
-    section(`主要依据·本卦${name(i)}爻辞`, yaoText(benDetail, name(i)));
+    section(`主要依据·本卦${name(i)}爻辞`, benDetail.yao[name(i)]);
   const zhiYao = (i: number) =>
-    section(`主要依据·之卦${name(i)}爻辞`, yaoText(zhiDetail, name(i)));
+    section(`主要依据·之卦${name(i)}爻辞`, zhiDetail!.yao[name(i)]);
   const yong = YONG[ben.guaMark];
 
   // 朱熹《易学启蒙》变爻占法
@@ -159,17 +125,17 @@ export async function buildMessages(prompt: unknown, yaoList: unknown) {
 
   const background: string[] = [];
   if (!basis.includes(benGua)) {
-    background.push(section("背景·本卦卦辞", guaText(benDetail)));
+    background.push(section("背景·本卦卦辞", benDetail.gua));
   }
-  if (zhi && !basis.includes(zhiGua)) {
-    background.push(section("背景·之卦卦辞", guaText(zhiDetail)));
+  if (zhiDetail && !basis.includes(zhiGua)) {
+    background.push(section("背景·之卦卦辞", zhiDetail.gua));
   }
 
   // 四爻及以上变动时以之卦为主，参考解读随之取之卦
   const mainIsZhi = changes.length >= 4;
   const reference = section(
     `参考解读·${(mainIsZhi ? zhi! : ben).guaTitle}传统解卦`,
-    traditionText(mainIsZhi ? zhiDetail : benDetail),
+    (mainIsZhi ? zhiDetail! : benDetail).tradition,
   );
 
   const meta = {

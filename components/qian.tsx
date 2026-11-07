@@ -10,10 +10,9 @@ import { drawQian, Jiao, qianInfo, qianLabel, tossJiao } from "@/lib/qian";
 import { qianSounds } from "@/lib/sound";
 import qianPresets from "@/lib/data/qian-presets.json";
 import { getQianAnswer } from "@/app/server";
-import { readStreamableValue } from "ai/rsc";
+import { useAnswer } from "@/lib/use-answer";
 import { Button } from "./ui/button";
 import { BrainCircuit, ListRestart } from "lucide-react";
-import { ERROR_PREFIX } from "@/lib/constant";
 
 type Phase = "shake" | "drop" | "toss" | "landed" | "done";
 
@@ -36,14 +35,16 @@ const GRADE_COLOR: Record<string, string> = {
 };
 
 function Qian() {
-  const [error, setError] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [completion, setCompletion] = useState<string>("");
-
   const [question, setQuestion] = useState("");
   const [phase, setPhase] = useState<Phase | null>(null);
   const [no, setNo] = useState(1);
   const [tries, setTries] = useState(1);
+  const {
+    completion,
+    isLoading,
+    error,
+    run: onCompletion,
+  } = useAnswer(() => getQianAnswer(question, no, tries));
   const [jiao, setJiao] = useState<Jiao | null>(null);
   const [resultAi, setResultAi] = useState(false);
 
@@ -92,34 +93,6 @@ function Qian() {
     }
     return () => clearTimeout(id);
   }, [phase, jiao, tries]);
-
-  async function onCompletion() {
-    setError("");
-    setCompletion("");
-    setIsLoading(true);
-    try {
-      const { data, error } = await getQianAnswer(question, no, tries);
-      if (error) {
-        setError(error);
-        return;
-      }
-      if (data) {
-        let ret = "";
-        for await (const delta of readStreamableValue(data)) {
-          if (delta.startsWith(ERROR_PREFIX)) {
-            setError(delta.slice(ERROR_PREFIX.length));
-            return;
-          }
-          ret += delta;
-          setCompletion(ret);
-        }
-      }
-    } catch (err: any) {
-      setError(err.message ?? err);
-    } finally {
-      setIsLoading(false);
-    }
-  }
 
   function start(value: string) {
     // 摇签音效在点击中直接播放，落签和掷筊由定时器触发，需先解锁

@@ -9,7 +9,8 @@ import { TarotCard } from "@/lib/tarot";
 import { buildTarotMessages } from "@/lib/tarot-prompt";
 import { buildQianMessages } from "@/lib/qian-prompt";
 import { buildDreamMessages } from "@/lib/dream-prompt";
-import { DivinationType, getVisitor, saveLog } from "@/lib/log";
+import { DivinationType, getIp, getVisitor, saveLog } from "@/lib/log";
+import { RATE_LIMIT_MESSAGE, rateLimit } from "@/lib/rate-limit";
 import { after } from "next/server";
 
 const model = process.env.OPENAI_MODEL ?? "gpt-3.5-turbo";
@@ -29,7 +30,7 @@ type Messages = {
 };
 
 export async function getAnswer(prompt: string, yaoList: Yao[]) {
-  return answer("周易", () => buildMessages(prompt, yaoList));
+  return answer("周易", async () => buildMessages(prompt, yaoList));
 }
 
 export async function getTarotAnswer(prompt: string, cards: TarotCard[]) {
@@ -48,6 +49,9 @@ async function answer(type: DivinationType, build: () => Promise<Messages>) {
   const stream = createStreamableValue();
   try {
     const { system, user, meta } = await build();
+    if (!rateLimit(await getIp())) {
+      throw new Error(RATE_LIMIT_MESSAGE);
+    }
     const visitor = await getVisitor();
 
     const { fullStream } = streamText({
