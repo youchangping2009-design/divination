@@ -6,8 +6,7 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "zhouyi": "node scripts/build-zhouyi.mjs"
+    "lint": "next lint"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.0.18",

@@ -49,7 +49,6 @@ export function questionTag(question: string) {
 
 type GuaDetail = { gua: string; yao: Record<string, string>; tradition: string };
 
-// 由 scripts/build-zhouyi.mjs 从 lib/data/zhouyi/*.md 生成
 const GUA_DETAILS: Record<string, GuaDetail> = zhouyi;
 
 function section(label: string, text: string) {
