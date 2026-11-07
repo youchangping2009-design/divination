@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { CardBack } from "@/components/tarot-card";
 import { QianTube } from "@/components/qian-art";
+import { MoonStar } from "lucide-react";
 
 const BOX =
   "ignore-animate mt-6 flex w-full max-w-md items-center gap-4 rounded-md border p-4 shadow dark:border-0 dark:shadow-none";
@@ -22,6 +23,24 @@ export function ZhouyiIntro() {
         </h1>
         <p className="text-sm text-muted-foreground">
           心中默念所问之事，抛掷三枚铜钱六次，自下而上成卦，依《周易》经文与朱熹占法解读。
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export function DreamIntro() {
+  return (
+    <div className={`${BOX} bg-indigo-50/60 dark:bg-secondary`}>
+      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-indigo-900 text-amber-200">
+        <MoonStar size={28} strokeWidth={1.5} />
+      </div>
+      <div className="flex flex-col gap-1">
+        <h1 className="text-lg font-medium text-indigo-800 dark:text-indigo-400">
+          周公解梦 · 敦煌古本
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          写下你的梦，先从唐五代敦煌写本《新集周公解梦书》中找出相关梦象，再结合传统寓意与现代心理学解读。
         </p>
       </div>
     </div>

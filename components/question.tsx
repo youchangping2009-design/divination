@@ -19,6 +19,7 @@ function Question(props: {
   label?: string;
   placeholder?: string;
   startLabel?: string;
+  maxLength?: number;
 }) {
   const inputRef = createRef<HTMLTextAreaElement>();
   const [empty, setEmpty] = useState(false);
@@ -63,7 +64,7 @@ function Question(props: {
               empty && "border-destructive focus-visible:ring-destructive",
             )}
             rows={4}
-            maxLength={QUESTION_MAX_LENGTH}
+            maxLength={props.maxLength ?? QUESTION_MAX_LENGTH}
             onChange={() => empty && setEmpty(false)}
           />
           <div className="flex items-center justify-between">

@@ -80,10 +80,10 @@ export async function getVisitor() {
 
 export type Visitor = Awaited<ReturnType<typeof getVisitor>>;
 
-export type DivinationType = "周易" | "塔罗" | "求签";
+export type DivinationType = "周易" | "塔罗" | "求签" | "解梦";
 
 // gua、changes、zhi 三列：周易依次存本卦、变爻、之卦，塔罗依次存过去、现在、未来三张牌，
-// 求签依次存签号与典故、等第、掷筊结果
+// 求签依次存签号与典故、等第、掷筊结果，解梦存匹配到的梦象与条目数
 export async function saveLog(record: {
   type: DivinationType;
   question: string;
@@ -99,9 +99,10 @@ export async function saveLog(record: {
   await ensureTable();
   const { visitor: v } = record;
   // 触发危机回复的问题属于高度敏感信息，只记标记不存原文
+  const question = record.crisis ? null : record.question;
   await sql`INSERT INTO divination_logs
     (type, question, gua, changes, zhi, crisis, ip_hash, country, region, city, device, browser)
-    VALUES (${record.type}, ${record.crisis ? null : record.question}, ${record.gua}, ${record.changes}, ${record.zhi},
+    VALUES (${record.type}, ${question}, ${record.gua}, ${record.changes}, ${record.zhi},
       ${record.crisis}, ${v.ipHash}, ${v.country}, ${v.region}, ${v.city}, ${v.device}, ${v.browser})`;
   await sql`DELETE FROM divination_logs WHERE created_at < now() - make_interval(days => ${RETENTION_DAYS})`;
 }

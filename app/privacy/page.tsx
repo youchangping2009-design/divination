@@ -11,9 +11,11 @@ export default function Privacy() {
     <main className="h-0 flex-1 overflow-auto px-4 py-6">
       <article className="prose prose-sm mx-auto dark:prose-invert">
         <h1>隐私说明</h1>
-        <p>为了改进解卦服务，本站会在你点击「AI 解读」后记录以下信息：</p>
+        <p>为了改进占卜服务，本站会在你点击「AI 解读」后记录以下信息：</p>
         <ul>
-          <li>你输入的问题，以及摇出的本卦、变爻和之卦；</li>
+          <li>
+            你输入的问题或梦境描述，以及占卜结果（求得的签、抽到的牌、摇出的卦或匹配到的梦象）；
+          </li>
           <li>根据网络地址推断的大致地区（国家、省份、城市）；</li>
           <li>设备类型与浏览器类型；</li>
           <li>

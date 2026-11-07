@@ -171,6 +171,7 @@ function Divination() {
           setQuestion(value);
         }}
         label="您想决断什么？"
+        placeholder="想决断哪件事？例：这个合作该不该接？"
         startLabel="开始起卦"
         presets={zhouyiPresets}
       />

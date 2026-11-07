@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import { DivinationType, listLogs, LogRow } from "@/lib/log";
 import { RETENTION_DAYS } from "@/lib/constant";
 
-const RESULT_LABELS: Record<DivinationType, [string, string, string]> = {
+const RESULT_LABELS: Record<DivinationType, string[]> = {
   周易: ["本卦", "变爻", "之卦"],
   塔罗: ["过去", "现在", "未来"],
   求签: ["签号", "等第", "掷筊"],
+  解梦: ["梦象", "条目"],
 };
 
 function ResultCell({ row }: { row: LogRow }) {
-  const labels = RESULT_LABELS[row.type] ?? RESULT_LABELS["周易"];
+  const labels = RESULT_LABELS[row.type] ?? ["结果", "详情", "补充"];
   const values = [row.gua, row.changes, row.zhi];
   return (
     <div className="flex flex-col gap-0.5">
@@ -58,7 +59,7 @@ export default async function Admin({
         <input
           name="q"
           defaultValue={keyword}
-          placeholder="按问题、卦名、牌名、签号或城市搜索"
+          placeholder="按问题、卦名、牌名、签号、梦象或城市搜索"
           className="w-64 rounded-md border bg-background px-3 py-1.5"
         />
         <button className="rounded-md bg-primary px-3 py-1.5 text-primary-foreground">
@@ -92,7 +93,7 @@ export default async function Admin({
                       （危机回复，未保存原文）
                     </span>
                   ) : (
-                    row.question
+                    (row.question ?? "—")
                   )}
                 </td>
                 <td className="p-2">

@@ -36,10 +36,10 @@ export function boundaryRules(service: string) {
 - 如果问题流露出自伤、轻生或伤害他人的念头，不要${service}，先表达关心，建议立即联系身边信任的人，或拨打心理援助热线 12356、希望24热线 400-161-9995，紧急情况拨打 110 或 120。`;
 }
 
-export function parseQuestion(prompt: unknown) {
+export function parseQuestion(prompt: unknown, max = QUESTION_MAX_LENGTH) {
   const question = typeof prompt === "string" ? prompt.trim() : "";
-  if (!question || question.length > QUESTION_MAX_LENGTH) {
-    throw new Error(`问题不能为空，且不超过 ${QUESTION_MAX_LENGTH} 字`);
+  if (!question || question.length > max) {
+    throw new Error(`内容不能为空，且不超过 ${max} 字`);
   }
   return question;
 }

@@ -5,6 +5,7 @@ import clsx from "clsx";
 
 const TABS = [
   { href: "/", label: "求签", active: "bg-red-700 text-white" },
+  { href: "/dream", label: "解梦", active: "bg-indigo-700 text-white" },
   { href: "/zhouyi", label: "周易", active: "bg-amber-700 text-white" },
   { href: "/tarot", label: "塔罗", active: "bg-purple-700 text-white" },
 ];

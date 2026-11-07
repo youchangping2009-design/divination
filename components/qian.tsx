@@ -162,7 +162,7 @@ function Qian() {
         setQuestion={start}
         icon={<QianTube className="mr-2 h-6 w-5 shrink-0" />}
         label="您想求什么？"
-        placeholder="请输入所求之事……"
+        placeholder="所求何事？例：今年换工作能顺利吗？"
         startLabel="开始求签"
         presets={qianPresets}
       />

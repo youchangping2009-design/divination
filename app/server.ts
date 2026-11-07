@@ -8,6 +8,7 @@ import { buildMessages } from "@/lib/prompt";
 import { TarotCard } from "@/lib/tarot";
 import { buildTarotMessages } from "@/lib/tarot-prompt";
 import { buildQianMessages } from "@/lib/qian-prompt";
+import { buildDreamMessages } from "@/lib/dream-prompt";
 import { DivinationType, getVisitor, saveLog } from "@/lib/log";
 import { after } from "next/server";
 
@@ -37,6 +38,10 @@ export async function getTarotAnswer(prompt: string, cards: TarotCard[]) {
 
 export async function getQianAnswer(prompt: string, no: number, tries: number) {
   return answer("求签", async () => buildQianMessages(prompt, no, tries));
+}
+
+export async function getDreamAnswer(prompt: string) {
+  return answer("解梦", async () => buildDreamMessages(prompt));
 }
 
 async function answer(type: DivinationType, build: () => Promise<Messages>) {

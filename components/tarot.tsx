@@ -132,7 +132,7 @@ function Tarot() {
         setQuestion={start}
         icon={<Sparkles size={22} className="mr-2 shrink-0 text-purple-500" />}
         label="您想问什么？"
-        placeholder="请输入想问塔罗的事……"
+        placeholder="想了解什么？例：这段关系会如何发展？"
         startLabel="开始抽牌"
         presets={tarotPresets}
       />
